@@ -27,21 +27,20 @@ class ReviewDao(ReviewDto):
     def group_by(cls):
         Session = openSession()
         session = Session()
-        # moviedao = MovieDao()
-        # movid = moviedao.
-        titles = session.query(cls.title, cls.label, MovieDto.title_kor, MovieDto.image_naver)
-        
-        titledict = {}
-        titles = session.query(cls.title, cls.label).all() # 타이틀 뽑아 왔음
+        print("그룹 바이 진입!!!")
+        titles = session.query(cls, MovieDto.title_kor, MovieDto.image_naver).filter(cls.mov_id.like(MovieDto.mov_id)).all()
+        titledict = {} # 타이틀 뽑아 왔음
         for title in titles:
-            if title[0] not in titledict:
-                titledict[title[0]] = 1
+            if title[-2] not in titledict:
+                titledict[title[-2]] = 1
             else:
-                titledict[title[0]] += 1
-            if title[1] == 1:
-                titledict[title[0]] += 1
+                titledict[title[-2]] += 1
+            if title[-3] == 1:
+                titledict[title[-2]] += 1
         titledict = {k: v for k, v in sorted(titledict.items(), key=lambda item: item[1])}
+        print(titledict)
         return titledict
+        
     
     '''
     @classmethod
