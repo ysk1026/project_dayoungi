@@ -56,15 +56,17 @@ export default function ReviewWrite() {
   const [content, setContent] = useState('')
   const history = useHistory()
   const movieId = data['mov_id']
-
+  const userId = sessionStorage.getItem("sessionUser")
   const write = useCallback(async e=> {
-    alert(`Title: ${title}, Content: ${content}, MovieId: ${movieId}`)
+    alert(`UserId: ${userId}, Title: ${title}, Content: ${content}, MovieId: ${movieId}`)
     try {
       const req = {
           method: c.post,
           url: `${c.url}/api/review`,
           data: 
-            { 'title' : title,
+            { 
+              'usr_id': userId,
+              'title' : title,
               'content' : content,
               'mov_id' : movieId
             },

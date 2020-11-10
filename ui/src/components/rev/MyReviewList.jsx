@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MyReviewList() {
   const classes = useStyles();
   const [data, setData] = useState([])
-  const userId = localStorage.getItem('user_id')
+  const userId = sessionStorage.getItem('sessionUser')
   useEffect(() => {
     axios.get(`http://localhost:8080/api/myreview/${userId}`)
     .then(res=> {
