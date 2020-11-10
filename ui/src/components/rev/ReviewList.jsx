@@ -35,18 +35,17 @@ export default function EntireList() {
 
 const fetchSomeReview = useCallback(async e=> {
   alert("진입")
-  const title = document.querySelector('#movieTitle').value
-  alert(title)
+  const movieTitle = document.querySelector('#movieTitle').value
+  alert(movieTitle)
   try {
       const req = {
           method: c.get,
-          url: `${c.url}/api/reviewsearch${title}`,
+          url: `${c.url}/api/reviewsearch/${movieTitle}`,
           // data: {params: title},
           auth: c.auth
 
       }
       const res = await axios(req)
-      alert(res.rev_id)
       setData(res.data)
   } catch (error){
       alert(`fetchSomeReviews failure ${error}`)
@@ -75,8 +74,8 @@ const userId = e => {
         <TableHead>
           <TableRow>
             
-            <TableCell>ID</TableCell>
-            <TableCell>영화</TableCell>
+            <TableCell>닉네임</TableCell>
+            <TableCell>영화 제목</TableCell>
             <TableCell>리뷰 제목</TableCell>
             <TableCell>리뷰 내용</TableCell>
             <TableCell>평가</TableCell>
@@ -86,8 +85,8 @@ const userId = e => {
         <TableBody>
           {data.map((i, index) => (
             <TableRow key={index}>
-              <TableCell>{i.usr_id}</TableCell>
-              <TableCell>{i.mov_id}</TableCell>
+              <TableCell>{i.fname}</TableCell>
+              <TableCell>{i.title_kor}</TableCell>
               <TableCell>{i.title}</TableCell>
               <TableCell>{i.content}</TableCell>
               <TableCell>{((i.label == 1) ? <Emoji symbol="⭐️"/> : <Emoji symbol="❌"/>)}</TableCell>

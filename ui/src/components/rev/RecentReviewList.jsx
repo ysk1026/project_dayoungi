@@ -48,7 +48,7 @@ return (
         {data.map((i, index) => (
           <TableRow key={index}>
             {/* <TableCell>{i.user_id}</TableCell> */}
-            <TableCell>{i.movie_id}</TableCell>
+            <TableCell>{i.title_kor}</TableCell>
             <TableCell>{i.title}</TableCell>
             <TableCell align="right">{((i.label == 1) ? <Emoji symbol="⭐️"/> : <Emoji symbol="❌"/>)}</TableCell>
           </TableRow>

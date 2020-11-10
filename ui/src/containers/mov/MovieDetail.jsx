@@ -94,6 +94,22 @@ export default function MovieDetail() {
     }
     },[])
 
+    const fetchSomeRecommendMovie = useCallback(async e=> {
+      const title_kor = e.target.getAttribute('title_kor')
+      alert(`영화 추천 ${title_kor}`)
+      try {
+          const req = {
+              method: c.get,
+              url: `${c.url}/api/movie-recommendation/${title_kor}`,
+              auth: c.auth
+          }
+          const res = await axios(req)
+          setData(res.data)
+      } catch (error){
+          alert(`The value could not be found. ${error}`)
+      }
+      },[])
+    
 const cards = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,]
   return (
     <React.Fragment>
@@ -139,9 +155,9 @@ const cards = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,]
 
                   </CardContent>
                   <CardActions>
-                    <Button size="small" color="primary">
+                    <button size="small" color="primary" title_kor={i.title_kor} onClick={fetchSomeRecommendMovie}>
                       View
-                    </Button>
+                    </button>
                     <Button size="small" color="primary">
                       Edit
                     </Button>

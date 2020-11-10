@@ -71,9 +71,10 @@ const revid = e => {
         <TableHead>
           <TableRow>
             
-            <TableCell>ID</TableCell>
+            <TableCell>닉네임</TableCell>
             <TableCell>영화</TableCell>
             <TableCell>리뷰 제목</TableCell>
+            <TableCell>내용</TableCell>
             <TableCell>평가</TableCell>
             <TableCell align="right">수정</TableCell>
           </TableRow>
@@ -81,9 +82,10 @@ const revid = e => {
         <TableBody>
           {data.map((i, index) => (
             <TableRow key={index}>
-                <TableCell>{i.usr_id}</TableCell>
-                <TableCell>{i.mov_id}</TableCell>
+                <TableCell>{i.fname}</TableCell>
+                <TableCell>{i.title_kor}</TableCell>
                 <TableCell>{i.title}</TableCell>
+                <TableCell>{i.content}</TableCell>
                 <TableCell>{((i.label == 1) ? <Emoji symbol="⭐️"/> : <Emoji symbol="❌"/>)}</TableCell>
                 <TableCell align="right">
                     <button>
