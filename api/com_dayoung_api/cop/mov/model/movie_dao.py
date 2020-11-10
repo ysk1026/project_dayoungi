@@ -60,7 +60,7 @@ class MovieDao(MovieDto):
         movie_json = movie.json()
         mov_id = movie_json['mov_id']
         print(f'mov_id : {mov_id}')
-        return mov_id
+        return mov_id        
     
     @classmethod
     def find_all(cls):

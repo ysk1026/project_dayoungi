@@ -28,19 +28,42 @@ class ReviewDao(ReviewDto):
         Session = openSession()
         session = Session()
         print("그룹 바이 진입!!!")
-        titles = session.query(cls, MovieDto.title_kor, MovieDto.image_naver).filter(cls.mov_id.like(MovieDto.mov_id)).all()
+        titles = session.query(cls, MovieDto.title_kor).filter(cls.mov_id.like(MovieDto.mov_id)).all()
         titledict = {} # 타이틀 뽑아 왔음
         for title in titles:
-            if title[-2] not in titledict:
-                titledict[title[-2]] = 1
+            if title[-1] not in titledict:
+                titledict[title[-1]] = 1
             else:
-                titledict[title[-2]] += 1
-            if title[-3] == 1:
-                titledict[title[-2]] += 1
+                titledict[title[-1]] += 1
+            if title[-2] == 1:
+                titledict[title[-1]] += 1
+        session.close()
         titledict = {k: v for k, v in sorted(titledict.items(), key=lambda item: item[1])}
-        print(titledict)
+        print(f'Sorting 이후 : {titledict}')
+        # max_key = max(titledict, key=titledict. get)
+        # print(f'Max key : {max_key}')
         return titledict
-        
+    
+    @classmethod
+    def group_by_for_top(cls):
+        Session = openSession()
+        session = Session()
+        print("그룹 바이 for top 진입!!!")
+        titles = session.query(cls, MovieDto.title_kor).filter(cls.mov_id.like(MovieDto.mov_id)).all()
+        titledict = {} # 타이틀 뽑아 왔음
+        for title in titles:
+            if title[-1] not in titledict:
+                titledict[title[-1]] = 1
+            else:
+                titledict[title[-1]] += 1
+            if title[-2] == 1:
+                titledict[title[-1]] += 1
+        session.close()
+        titledict = {k: v for k, v in sorted(titledict.items(), key=lambda item: item[1])}
+        print(f'Sorting 이후 : {titledict}')
+        # max_key = max(titledict, key=titledict. get)
+        # print(f'Max key : {max_key}')
+        return titledict
     
     '''
     @classmethod
