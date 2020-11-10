@@ -9,6 +9,7 @@ from com_dayoung_api.cop.rev.model.review_dfo import ReviewDfo
 from com_dayoung_api.cop.rev.model.review_dto import ReviewDto
 from com_dayoung_api.cop.mov.model.movie_dao import MovieDao
 from com_dayoung_api.cop.mov.model.movie_dto import MovieDto, MovieVo
+from com_dayoung_api.usr.model.user_dto import UserDto
 from com_dayoung_api.ext.db import db, openSession
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy import create_engine
@@ -21,7 +22,28 @@ class ReviewDao(ReviewDto):
         Session = openSession()
         session = Session()
         return session.query(func.count(ReviewDto.rev_id)).one()
-
+    
+    @classmethod
+    def group_by(cls):
+        Session = openSession()
+        session = Session()
+        # moviedao = MovieDao()
+        # movid = moviedao.
+        titles = session.query(cls.title, cls.label, MovieDto.title_kor, MovieDto.image_naver)
+        
+        titledict = {}
+        titles = session.query(cls.title, cls.label).all() # 타이틀 뽑아 왔음
+        for title in titles:
+            if title[0] not in titledict:
+                titledict[title[0]] = 1
+            else:
+                titledict[title[0]] += 1
+            if title[1] == 1:
+                titledict[title[0]] += 1
+        titledict = {k: v for k, v in sorted(titledict.items(), key=lambda item: item[1])}
+        return titledict
+    
+    '''
     @classmethod
     def group_by(cls):
         Session = openSession()
@@ -37,20 +59,24 @@ class ReviewDao(ReviewDto):
                 titledict[title[0]] += 1
         titledict = {k: v for k, v in sorted(titledict.items(), key=lambda item: item[1])}
         return titledict
-            
+    '''        
                 
     @classmethod
     def find_all(cls):
-        sql = cls.query
-        df = pd.read_sql(sql.statement, sql.session.bind)
-        df_movie_id = df['mov_id']
-        print(df_movie_id[0])
-        print(len(df['mov_id']))
-        count = 0
-        for movie in df_movie_id:
-            df_movie_id[count] = MovieDao.find_by_id(movie).title_kor 
-            print(MovieDao.find_by_id(movie).title_kor)
-            count += 1
+        Session = openSession()
+        session = Session()
+        newtables = session.query(ReviewDto, MovieDto.title_kor, UserDto.fname).filter(UserDto.usr_id.like(ReviewDto.usr_id))\
+            .filter(ReviewDto.mov_id.like(MovieDto.mov_id))
+        df = pd.read_sql(newtables.statement, newtables.session.bind)
+        # df_movie_id = df['mov_id']
+        # print(df_movie_id[0])
+        # print(len(df['mov_id']))
+        # count = 0
+        # for movie in df_movie_id:
+        #     df_movie_id[count] = MovieDao.find_by_id(movie).title_kor 
+        #     print(MovieDao.find_by_id(movie).title_kor)
+        #     count += 1
+        print(df)
         return json.loads(df.to_json(orient='records'))
     
     @classmethod
@@ -72,61 +98,27 @@ class ReviewDao(ReviewDto):
         session = Session()
         print("FIND BY USER ID METHOD 진입!")
         print ("성공")
-        return session.query(ReviewDto).filter(ReviewDto.usr_id.like(user_id)).all()
-    
-    '''
-    위에 find_review_by_user_id가 기존에 있던 코드
-    밑에 껄로 join 해서 시도중, 안되면 위에껄로 다시 초기화 해야함..
-    매우 어렵다
-    '''
-    '''
-    @classmethod
-    def find_review_by_user_id(cls, user_id):
-        Session = openSession()
-        session = Session()
-        print("FIND BY USER ID METHOD 진입!")
-        print ("성공")
-        print()
-        print("USER ID의 리뷰 불러오기!")
-        f = session.query(ReviewDto).join(MovieDto).filter(MovieDto.mov_id.like(ReviewDto.mov_id)).all()
-        for a in f:
-            print(a)
-        # print(f)
-        # print(f.title_kor) 
-        # print(session.query(f).filter(f.mov_id.like(2)).one())
-        
-        li = []
-        count = 1
-        original_review = session.query(ReviewDto).filter(ReviewDto.usr_id.like(user_id)).all()
-        for rev_data in original_review:
-            df = pd.DataFrame( {
-                'usr_id' : rev_data.usr_id,
-                'mov_id' : rev_data.mov_id,
-                'title' : rev_data.title,
-                'content' : rev_data.content,
-                'label' : rev_data.label
-            }, index = [0])
-            mov_id = rev_data.mov_id
-            for u, a in session.query(ReviewDto, MovieDto).filter(mov_id == MovieDto.mov_id).all():
-                count += 1
-                if count % 2 != 0:
-                    continue
-                print("출력")
-                print(a.title_kor)
-                df['mov_id'] = a.title_kor
-                df = json.loads(df.to_json(orient='records'))
-                li.append(df)
-        print(li)
-        # q = session.query(ReviewDto).join(MovieDto).filter(MovieDto.mov_id == mov_id).one()
-        return session.query(ReviewDto).filter(ReviewDto.usr_id.like(user_id)).all()
-        '''
+
+        # 기존 Reviews table에 movies.title_kor / UserDto.fname을 조인해서 SQLAlchemy 자체로 가져옴
+        newtables = session.query(ReviewDto, MovieDto.title_kor, UserDto.fname).filter(UserDto.usr_id.like(user_id))\
+            .filter(ReviewDto.mov_id.like(MovieDto.mov_id))
+        # 해당 Query를 DataFrame으로 전환
+        df = pd.read_sql(newtables.statement, newtables.session.bind)
+        return json.loads(df.to_json(orient='records'))
+
     
     @classmethod
-    def find_by_movie_title(cls, title):
+    def find_by_movie_title(cls, movie_title):
+        print("FIND BY MOVIE TITLE 진입 !")
         Session = openSession()
         session = Session()
-        print("FIND BY TITLE 진입 !")
-        return session.query(ReviewDto).filter(ReviewDto.title.like(title)).all()
+        mov_id = MovieDao.find_by_title_return_id(movie_title)
+        newtables = session.query(cls, MovieDto.title_kor, UserDto.fname).filter(MovieDto.mov_id.like(mov_id))\
+            .filter(cls.mov_id.like(mov_id)).filter(cls.usr_id.like(UserDto.usr_id))
+        df = pd.read_sql(newtables.statement, newtables.session.bind)
+        print(df)
+        return json.loads(df.to_json(orient='records'))
+        # return session.query(ReviewDto).filter(ReviewDto.title.like(title)).all()
     
     @staticmethod
     def save(review):

@@ -51,7 +51,17 @@ class MovieDao(MovieDto):
     def find_by_id(cls, mov_id):
         print('##### find id #####')
         return session.query(MovieDto).filter(MovieDto.mov_id.like(f'{mov_id}')).one()
-
+    
+    @staticmethod
+    def find_by_title_return_id(title):
+        movie = session.query(MovieDto).filter(MovieDto.title_kor.like(title)).one()
+        print(movie)
+        print(movie.json())
+        movie_json = movie.json()
+        mov_id = movie_json['mov_id']
+        print(f'mov_id : {mov_id}')
+        return mov_id
+    
     @classmethod
     def find_all(cls):
         print('***** find all movie_reco *****')
