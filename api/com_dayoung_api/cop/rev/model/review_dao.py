@@ -122,10 +122,11 @@ class ReviewDao(ReviewDto):
         print ("성공")
 
         # 기존 Reviews table에 movies.title_kor / UserDto.fname을 조인해서 SQLAlchemy 자체로 가져옴
-        newtables = session.query(ReviewDto, MovieDto.title_kor, UserDto.fname).filter(UserDto.usr_id.like(user_id))\
-            .filter(ReviewDto.mov_id.like(MovieDto.mov_id))
+        newtables = session.query(ReviewDto, MovieDto.title_kor, UserDto.fname).filter(ReviewDto.usr_id.like(user_id))\
+            .filter(ReviewDto.usr_id.like(UserDto.usr_id)).filter(ReviewDto.mov_id.like(MovieDto.mov_id))
         # 해당 Query를 DataFrame으로 전환
         df = pd.read_sql(newtables.statement, newtables.session.bind)
+        print(df)
         return json.loads(df.to_json(orient='records'))
 
     

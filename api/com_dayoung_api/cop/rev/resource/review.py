@@ -27,7 +27,7 @@ class Review(Resource):
             label = 0
         
         # review = ReviewDto(args.title, args.content, 1, args.user_id, args.movie_id)
-        review = ReviewDto(args.title, args.content, label, "99", args.mov_id)
+        review = ReviewDto(args.title, args.content, label, args.usr_id, args.mov_id)
         print(f"Review: {review}")
         print('=======3======')
  
