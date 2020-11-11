@@ -64,24 +64,6 @@ class ReviewDao(ReviewDto):
         # max_key = max(titledict, key=titledict. get)
         # print(f'Max key : {max_key}')
         return titledict
-    
-    '''
-    @classmethod
-    def group_by(cls):
-        Session = openSession()
-        session = Session()
-        titledict = {}
-        titles = session.query(cls.title, cls.label).all() # 타이틀 뽑아 왔음
-        for title in titles:
-            if title[0] not in titledict:
-                titledict[title[0]] = 1
-            else:
-                titledict[title[0]] += 1
-            if title[1] == 1:
-                titledict[title[0]] += 1
-        titledict = {k: v for k, v in sorted(titledict.items(), key=lambda item: item[1])}
-        return titledict
-    '''        
                 
     @classmethod
     def find_all(cls):
@@ -90,14 +72,6 @@ class ReviewDao(ReviewDto):
         newtables = session.query(ReviewDto, MovieDto.title_kor, UserDto.fname).filter(UserDto.usr_id.like(ReviewDto.usr_id))\
             .filter(ReviewDto.mov_id.like(MovieDto.mov_id))
         df = pd.read_sql(newtables.statement, newtables.session.bind)
-        # df_movie_id = df['mov_id']
-        # print(df_movie_id[0])
-        # print(len(df['mov_id']))
-        # count = 0
-        # for movie in df_movie_id:
-        #     df_movie_id[count] = MovieDao.find_by_id(movie).title_kor 
-        #     print(MovieDao.find_by_id(movie).title_kor)
-        #     count += 1
         print(df)
         return json.loads(df.to_json(orient='records'))
     
