@@ -12,6 +12,10 @@ from sqlalchemy import func
 
 class ReviewDfo(object):
     
+    '''
+    Review DataFrame 생성, 관리 클래스
+    '''
+    
     def __init__(self):
         self.fileReader = FileReader()
         self.data = os.path.join(os.path.abspath(os.path.dirname(__file__)) + '/data')

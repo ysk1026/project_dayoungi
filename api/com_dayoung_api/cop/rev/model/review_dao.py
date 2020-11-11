@@ -17,11 +17,16 @@ from sqlalchemy import func
 
 class ReviewDao(ReviewDto):
     
+    '''
+    Review Database내의 데이터에 접근하여 관리하는 클래스
+    데이터들에 대한 조작을 담당함
+    '''
+    
     @classmethod
     def count(cls):
         Session = openSession()
         session = Session()
-        return session.query(func.count(ReviewDto.rev_id)).one()
+        return session.query(func.count(ReviewDto.rev_id)).one() # 테이블내의 총 Row 개수 반환
     
     @classmethod
     def group_by(cls):
