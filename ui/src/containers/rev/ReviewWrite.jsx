@@ -102,6 +102,7 @@ export default function ReviewWrite() {
     } catch (error){
         // alert(`fetchSomeReviews failure ${error}`)
         alert(`목록에 없는 영화입니다.`)
+        history.push('/write-review')
     }
     
   },[])
