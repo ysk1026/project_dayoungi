@@ -40,7 +40,7 @@ class ReviewDao(ReviewDto):
                 titledict[title[-1]] = 1
             else:
                 titledict[title[-1]] += 1
-            if title[-2] == 1:
+            if title[-2].label == 1:
                 titledict[title[-1]] += 1
         session.close()
         titledict = {k: v for k, v in sorted(titledict.items(), key=lambda item: item[1])}
@@ -61,7 +61,7 @@ class ReviewDao(ReviewDto):
                 titledict[title[-1]] = 1
             else:
                 titledict[title[-1]] += 1
-            if title[-2] == 1:
+            if title[-2].label == 1:
                 titledict[title[-1]] += 1
         session.close()
         titledict = {k: v for k, v in sorted(titledict.items(), key=lambda item: item[1])}
