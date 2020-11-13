@@ -1,5 +1,0 @@
-export {default as RatingDetail} from './RatingDetail'
-export {default as RatingRegister} from './RatingRegister'
-export {default as RatingList} from './RatingList'
-export {default as RatingModify} from './RatingModify'
-export {default as RatingRemove} from './RatingRemove'
