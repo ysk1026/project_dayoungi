@@ -16,7 +16,7 @@ class ReviewTop(Resource):
     @staticmethod
     def get():
         print("Top Movie 진입")
-        rank = ReviewDao.group_by_for_top() # 영화 = Key, 점수 = Value로 분류한 Dict를 받아옴.
+        rank = ReviewDao.group_by() # 영화 = Key, 점수 = Value로 분류한 Dict를 받아옴.
         movie_top_by_review = max(rank, key=rank. get) # Dict내 Value 점수가 가장 높은 영화 찾기.
         print(movie_top_by_review)
         top_movie_info = MovieDao.find_by_title(movie_top_by_review) # 해당 영화의 정보를 받아옴

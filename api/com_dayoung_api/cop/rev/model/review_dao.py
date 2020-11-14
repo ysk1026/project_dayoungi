@@ -49,6 +49,7 @@ class ReviewDao(ReviewDto):
         # print(f'Max key : {max_key}')
         return titledict
     
+    '''
     @classmethod
     def group_by_for_top(cls):
         Session = openSession()
@@ -69,7 +70,9 @@ class ReviewDao(ReviewDto):
         # max_key = max(titledict, key=titledict. get)
         # print(f'Max key : {max_key}')
         return titledict
-                
+    
+    '''
+    
     @classmethod
     def find_all(cls):
         Session = openSession()
