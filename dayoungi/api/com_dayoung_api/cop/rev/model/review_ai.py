@@ -25,16 +25,58 @@ class ReviewAi(object):
         self.y_test = None
 
     def hook(self):
+        ai = ReviewAi()
+        docs = ai.create_docs()
+        train_docs = docs[0]
+        test_docs = docs[1]
+        print()
+        print(f'[ 훈련데이터 상위 10 Rows ] : {train_docs[:10]}')
+        print()
+        tokens = ai.create_tokens(train_docs)
+        print()
+        print(f'[ 전체 토큰의 개수 ] : {len(tokens)}')
+        print()
+        nltk_text =  ai.create_nltk_text(tokens)
+        print()
+        print(f'[ 중복을 제외한 토큰의 개수 ] {len(nltk_text.tokens)}')
+        print()
+        print(f'[ 출현 빈도가 높은 상위 토큰 10개 ] {nltk_text.vocab().most_common(10)}') 
+        print()
+        # 출현 빈도 높은 상위 10000개 토큰 분류
+        selected_words = ai.transfer_text_to_selected_words(nltk_text)
+        print(f'[출현 빈도가 높은 상위 토큰] {selected_words}')
+        print()
+        term_frequency = ai.term_frequency()
+        print()
+        print(f'[term_frequency] : {term_frequency}')
+        print()
+        ai.set_train(train_docs, test_docs)
+        ai.model_save()
+        
+        # term_freq_count = ai.term_frequency(train_docs)
+        # ai.set_train()
+        # ai.model_save()
+        # model = ai.model_load()
+        # answer = ai.model_eval(model)
+        # print(f'[ 모델 평가한 답 ] {answer}')
+        # print(f'================= Practice Result ====================')
+        # ai.predict_review("재미 정말 없어요 갖다 버리세요")
+        # ai.predict_review("이건 개망한 영화인데;; 누가보냐")
+        # ai.predict_review("좋았어 이거 또 보러 온다")
+        # ai.predict_review("너무 예쁜데요 ㅠㅠ 최고에요")
+        # ai.predict_review("하하하 쩔었다~~")
+        # ai.predict_review("21세기 최고의 영화다 진짜!!")
+        # ai.predict_review("너무 재밌어요 ㅋㅋ 진짜 쩐다 쩔어")
         
         
     def create_docs(self):
         path = self.path
         fname = self.fname
-        fname = '/com_dayoung_api/cop/rev/model/data/train_docs.json'
+        fname = '/data/train_docs.json'
         with open(path + fname, encoding='utf-8') as f:
             train_docs = json.load(f)
             
-        fname = '/com_dayoung_api/cop/rev/model/data/test_docs.json'
+        fname = '/data/test_docs.json'
         with open(path + fname, encoding='utf-8') as f:
             test_docs = json.load(f)
         # print(train_docs[:10])
@@ -55,19 +97,13 @@ class ReviewAi(object):
     
     @staticmethod
     def transfer_text_to_selected_words(text):
-        selected_words = [f[0] for f in text.vocab().most_common(10)]
+        selected_words = [f[0] for f in text.vocab().most_common(100)]
         return selected_words
 
-    def term_frequency(self, doc):
-        # ai = ReviewAi()
-        # docs = self.create_docs()
-        # train_docs = docs[0]
-        # tokens = ai.create_tokens(train_docs)
-        # text = ai.create_nltk_text(tokens)
-        # selected_words = self.transfer_text_to_selected_words(text)
+    def term_frequency(self, doc, selected_words):
         return [doc.count(word) for word in selected_words]
     
-    def set_train(self):
+    def set_train(self, train_docs, test_docs):
         train_x = [self.term_frequency(d) for d, _ in train_docs]
         test_x = [self.term_frequency(d) for d, _ in test_docs]
         train_y = [c for _, c in train_docs]
@@ -80,7 +116,7 @@ class ReviewAi(object):
         
     def model_save(self):
 
-        FREQUENCY_COUNT = 10000;
+        FREQUENCY_COUNT = 100;
 
         # 레이어 구성
         model = tf.keras.models.Sequential([
@@ -96,13 +132,13 @@ class ReviewAi(object):
             )
         model.fit(self.x_train, self.y_train, epochs=10, batch_size=512)
 
-        model.save('review_model.h5')
+        model.save('test_model.h5')
 
     def model_load(self):
         path = self.path
         fname = self.fname
 
-        fname = '/com_dayoung_api/cop/rev/model/data/review_model.h5'
+        fname = '/data/review_model.h5'
         loaded_model = load_model(path + fname)
         return loaded_model
 
