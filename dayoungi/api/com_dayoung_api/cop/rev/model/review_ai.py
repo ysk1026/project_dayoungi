@@ -24,6 +24,9 @@ class ReviewAi(object):
         self.x_test = None
         self.y_test = None
 
+    def hook(self):
+        
+        
     def create_docs(self):
         path = self.path
         fname = self.fname
@@ -52,16 +55,16 @@ class ReviewAi(object):
     
     @staticmethod
     def transfer_text_to_selected_words(text):
-        selected_words = [f[0] for f in text.vocab().most_common(10000)]
+        selected_words = [f[0] for f in text.vocab().most_common(10)]
         return selected_words
 
     def term_frequency(self, doc):
-        ai = ReviewAi()
-        docs = self.create_docs()
-        train_docs = docs[0]
-        tokens = ai.create_tokens(train_docs)
-        text = ai.create_nltk_text(tokens)
-        selected_words = self.transfer_text_to_selected_words(text)
+        # ai = ReviewAi()
+        # docs = self.create_docs()
+        # train_docs = docs[0]
+        # tokens = ai.create_tokens(train_docs)
+        # text = ai.create_nltk_text(tokens)
+        # selected_words = self.transfer_text_to_selected_words(text)
         return [doc.count(word) for word in selected_words]
     
     def set_train(self):
@@ -93,7 +96,7 @@ class ReviewAi(object):
             )
         model.fit(self.x_train, self.y_train, epochs=10, batch_size=512)
 
-        model.save('another_model.h5')
+        model.save('review_model.h5')
 
     def model_load(self):
         path = self.path
@@ -122,36 +125,5 @@ class ReviewAi(object):
 
 if __name__ == "__main__":
     ai = ReviewAi()
-    docs = ai.create_docs()
-    train_docs = docs[0]
-    test_docs = docs[1]
-    print(f'[ 훈련데이터 상위 10 Rows ] : {train_docs[:10]}')
-    tokens = ai.create_tokens(train_docs)
-    print(f'[ 전체 토큰의 개수 ] : {len(tokens)}')
-    # docs = tokens
-    # temp_tokens = ai.tokenize(train_docs)
-    nltk_text =  ai.create_nltk_text(tokens)
-    print(f'[ 중복을 제외한 토큰의 개수 ] {len(nltk_text.tokens)}')
-    print(f'[ 출현 빈도가 높은 상위 토큰 10개 ] {nltk_text.vocab().most_common(10)}') 
-    
-    # 출현 빈도 높은 상위 10000개 토큰 분류
-    selected_words = ai.transfer_text_to_selected_words(nltk_text)
-    print(f'[ 출현 빈도가 높은 상위 토큰 100개 ] {selected_words[:100]}')
-    
-    
-    # term_freq_count = ai.term_frequency(train_docs)
-    # ai.set_train()
-    # ai.model_save()
-    # model = ai.model_load()
-    # answer = ai.model_eval(model)
-    # print(f'[ 모델 평가한 답 ] {answer}')
-    # print(f'================= Practice Result ====================')
-    ai.predict_review("재미 정말 없어요 갖다 버리세요")
-    ai.predict_review("이건 개망한 영화인데;; 누가보냐")
-    ai.predict_review("좋았어 이거 또 보러 온다")
-    ai.predict_review("너무 예쁜데요 ㅠㅠ 최고에요")
-    ai.predict_review("하하하 쩔었다~~")
-    ai.predict_review("21세기 최고의 영화다 진짜!!")
-    ai.predict_review("너무 재밌어요 ㅋㅋ 진짜 쩐다 쩔어")
-    ai.predict_review("수업 가기 귀찮다...")
+    ai.hook()
         
