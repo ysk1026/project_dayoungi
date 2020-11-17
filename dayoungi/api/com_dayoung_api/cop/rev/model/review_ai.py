@@ -46,10 +46,6 @@ class ReviewAi(object):
         selected_words = ai.transfer_text_to_selected_words(nltk_text)
         print(f'[출현 빈도가 높은 상위 토큰] {selected_words}')
         print()
-        term_frequency = ai.term_frequency()
-        print()
-        print(f'[term_frequency] : {term_frequency}')
-        print()
         ai.set_train(train_docs, test_docs)
         ai.model_save()
         
@@ -100,7 +96,15 @@ class ReviewAi(object):
         selected_words = [f[0] for f in text.vocab().most_common(100)]
         return selected_words
 
-    def term_frequency(self, doc, selected_words):
+    def term_frequency(self, doc):
+        ai = ReviewAi()
+        docs = ai.create_docs()
+        train_docs = docs[0]
+        test_docs = docs[1]
+        tokens = ai.create_tokens(train_docs)
+        nltk_text =  ai.create_nltk_text(tokens)
+        # 출현 빈도 높은 상위 10000개 토큰 분류
+        selected_words = ai.transfer_text_to_selected_words(nltk_text)
         return [doc.count(word) for word in selected_words]
     
     def set_train(self, train_docs, test_docs):
