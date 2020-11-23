@@ -36,12 +36,11 @@ class ReviewDao(ReviewDto):
         titles = session.query(cls, MovieDto.title_kor).filter(cls.mov_id.like(MovieDto.mov_id)).all()
         titledict = {} # 타이틀 뽑아 왔음
         for title in titles:
-            print('왜 안돼?', titledict[title-2])
             if title[-1] not in titledict:
                 titledict[title[-1]] = 1
             else:
                 titledict[title[-1]] += 1
-            if title[-2] == 1:
+            if title[-2].label == 1:
                 titledict[title[-1]] += 1
         session.close()
         titledict = {k: v for k, v in sorted(titledict.items(), key=lambda item: item[1])}
