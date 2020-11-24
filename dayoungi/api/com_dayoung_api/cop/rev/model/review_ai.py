@@ -48,7 +48,7 @@ class ReviewAi(object):
         print()
         ai.set_train(train_docs, test_docs)
         ai.model_save()
-        
+        ai.predict_review("재밌었다")
         # term_freq_count = ai.term_frequency(train_docs)
         # ai.set_train()
         # ai.model_save()
