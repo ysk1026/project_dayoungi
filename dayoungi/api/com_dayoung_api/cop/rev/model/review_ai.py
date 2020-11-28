@@ -93,7 +93,7 @@ class ReviewAi(object):
     
     @staticmethod
     def transfer_text_to_selected_words(text):
-        selected_words = [f[0] for f in text.vocab().most_common(100)]
+        selected_words = [f[0] for f in text.vocab().most_common(10)]
         return selected_words
 
     def term_frequency(self, doc):
@@ -120,7 +120,7 @@ class ReviewAi(object):
         
     def model_save(self):
 
-        FREQUENCY_COUNT = 100;
+        FREQUENCY_COUNT = 10;
 
         # 레이어 구성
         model = tf.keras.models.Sequential([
